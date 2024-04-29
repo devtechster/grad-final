@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Table with Charts</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 100px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<table id="dataTable" class="display" style="width:100%"></table>
+
+<div id="chartModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <canvas id="pieChart" width="50" height="50"></canvas>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('./batsmen_auction.csv')
+        .then(response => response.text())
+        .then(csvText => {
+            const data = parseCSV(csvText);
+            const headers = data[0];
+            const playerIndex = headers.indexOf("PLAYER");
+            const srIndex = headers.indexOf("SR");
+            const runIndex = headers.indexOf("Runs");
+            const foursIndex = headers.indexOf("4s");
+            const sixesIndex = headers.indexOf("6s");
+            const filteredData = data.slice(1).map(row => [row[playerIndex], row[srIndex], row[runIndex], row[foursIndex], row[sixesIndex]]);
+            initDataTable(filteredData);
+        })
+        .catch(error => console.error('Error loading the CSV:', error));
+
+    function parseCSV(csvText) {
+        // Simple CSV parsing that assumes no commas in data
+        return csvText.split('\n').map(row => row.split(','));
+    }
+
+    function initDataTable(data) {
+        var table = $('#dataTable').DataTable({
+            data: data,
+            columns: [
+                { title: "Player" },
+                { title: "SR" },
+                { title: "Runs", render: $.fn.dataTable.render.number(',', '.', 0, '') }, // Render numbers without thousand separator
+                { title: "4s" }, // Add column for 4s
+                { title: "6s" }, // Add column for 6s
+                { title: "Action", orderable: false, defaultContent: '<button>View Chart</button>' }
+            ]
+        });
+
+        $('#dataTable tbody').on('click', 'button', function() {
+            var rowData = table.row($(this).parents('tr')).data();
+            showChartModal(rowData);
+        });
+    }
+
+    function showChartModal(rowData) {
+        var modal = document.getElementById('chartModal');
+        var span = document.getElementsByClassName('close')[0];
+        modal.style.display = "block";
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        };
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        var totalRuns = rowData[2]; // Total runs
+        var totalFours = rowData[3]; // Total 4s
+        var totalSixes = rowData[4]; // Total 6s
+        var otherRuns = totalRuns - (totalFours + totalSixes); // Calculate other runs
+
+        var ctx = document.getElementById('pieChart').getContext('2d');
+        if (window.myPieChart) window.myPieChart.destroy(); // Destroy existing chart instance if exists
+        window.myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['4s', '6s', 'Other Runs'],
+                datasets: [{
+                    data: [totalFours, totalSixes, otherRuns],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                    hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                }]
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>
