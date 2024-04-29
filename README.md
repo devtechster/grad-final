@@ -17,7 +17,7 @@ Welcome to my final project repository for CS573 Data Visualization course at WP
 To help fellow decision makers , team management, stakeholders to analyze and select best players for their teams.
 
 #### Vision
-This continuously refining and expanding this project even after the course, and I'd love to hear your thoughts and suggestions! If you have any ideas or feedback, please don't hesitate to reach out to any of us. :eyes:
+This continuously refining and expanding this project even after the course, and I'd love to hear your thoughts and suggestions! If you have any ideas or feedback, please don't hesitate to reach out to me. :eyes:
 
 
 ## Related links:
