@@ -22,8 +22,6 @@ This continuously refining and expanding this project even after the course, and
 
 ## Related links:
 * Project Website: 
-  - Stat1: [Bowlers Dashboard - Purple Cap](https://public.tableau.com/app/profile/adhiraj.tableau/viz/Bowlers_dashboard/PurpleCap?publish=yes)
-  - Stat2: [Batsman Dashboard - HomePageDashboard](https://public.tableau.com/app/profile/adhiraj.tableau/viz/Batsman_Dashboard/HomePageDashboard?publish=yes)
-
+https://devtechster.github.io/grad-final/
 * Project Video: https://drive.google.com/file/d/1wbWu8eSsREiMBOkBvDCDXIDPbG8cgqYm/view?usp=sharing
 * Prospectus :https://github.com/devtechster/prospectus/blob/main/prospectus.pdf
